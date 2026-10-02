@@ -1,44 +1,58 @@
-package ru.netology.radio;
-
 public class Radio {
-
     private int currentStation;
     private int currentVolume;
+    private int stationsCount;
+
+    // Конструктор по умолчанию (10 станций)
+    public Radio() {
+        this(10);
+    }
+
+    // Конструктор с указанием количества станций
+    public Radio(int stationsCount) {
+        if (stationsCount <= 0) {
+            throw new IllegalArgumentException("Количество станций должно быть больше нуля!");
+        }
+        this.stationsCount = stationsCount;
+        this.currentStation = 0;
+        this.currentVolume = 0;
+    }
 
     public void next() {
-        if (currentStation == 9) {
+        if (currentStation == stationsCount - 1) {
             currentStation = 0;
         } else {
-            currentStation = currentStation + 1;
+            currentStation++;
         }
     }
 
     public void prev() {
         if (currentStation == 0) {
-            currentStation = 9;
+            currentStation = stationsCount - 1;
         } else {
-            currentStation = currentStation - 1;
+            currentStation--;
         }
     }
 
-    public void setCurrentStation(int newStation) {
-        if (newStation >= 0 && newStation <= 9) {
-            currentStation = newStation;
+    public void setCurrentStation(int currentStation) {
+        if (currentStation >= 0 && currentStation < stationsCount) {
+            this.currentStation = currentStation;
         }
     }
 
-    public void increaseVolume() {
+    public void volumeUp() {
         if (currentVolume < 100) {
-            currentVolume = currentVolume + 1;
+            currentVolume++;
         }
     }
 
-    public void decreaseVolume() {
+    public void volumeDown() {
         if (currentVolume > 0) {
-            currentVolume = currentVolume - 1;
+            currentVolume--;
         }
     }
 
+    // Геттеры (обрати внимание: getCurrentVolume)
     public int getCurrentStation() {
         return currentStation;
     }
@@ -47,9 +61,7 @@ public class Radio {
         return currentVolume;
     }
 
-    public void setCurrentVolume(int newVolume) {
-        if (newVolume >= 0 && newVolume <= 100) {
-            currentVolume = newVolume;
-        }
+    public int getStationsCount() {
+        return stationsCount;
     }
 }
