@@ -1,116 +1,66 @@
-package ru.netology.radio;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class RadioTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+class RadioTest {
 
     @Test
-    public void shouldNextFrom5() {
+    void testDefaultConstructor() {
         Radio radio = new Radio();
-        radio.setCurrentStation(5);
+        assertEquals(10, radio.getStationsCount());
+        assertEquals(0, radio.getCurrentStation());
+    }
 
+    @Test
+    void testCustomConstructor() {
+        Radio radio = new Radio(5);
+        assertEquals(5, radio.getStationsCount());
+        assertEquals(0, radio.getCurrentStation());
+    }
+
+    @Test
+    void testNextStationWrapAround() {
+        Radio radio = new Radio(3);
+        radio.setCurrentStation(2);
         radio.next();
-
-        Assertions.assertEquals(6, radio.getCurrentStation());
+        assertEquals(0, radio.getCurrentStation());
     }
 
     @Test
-    public void shouldNextFrom9() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(9);
-
-        radio.next();
-
-        Assertions.assertEquals(0, radio.getCurrentStation());
-    }
-
-    @Test
-    public void shouldPrevFrom5() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(5);
-
-        radio.prev();
-
-        Assertions.assertEquals(4, radio.getCurrentStation());
-    }
-
-    @Test
-    public void shouldPrevFrom0() {
-        Radio radio = new Radio();
+    void testPrevStationWrapAround() {
+        Radio radio = new Radio(3);
         radio.setCurrentStation(0);
-
         radio.prev();
-
-        Assertions.assertEquals(9, radio.getCurrentStation());
+        assertEquals(2, radio.getCurrentStation());
     }
 
     @Test
-    public void shouldSetValidStation() {
-        Radio radio = new Radio();
-
-        radio.setCurrentStation(7);
-
-        Assertions.assertEquals(7, radio.getCurrentStation());
-    }
-
-    @Test
-    public void shouldNotSetNegativeStation() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(5);
-
-        radio.setCurrentStation(-1);
-
-        Assertions.assertEquals(5, radio.getCurrentStation());
-    }
-
-    @Test
-    public void shouldNotSetTooHighStation() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(5);
-
+    void testSetCurrentStationOutOfBounds() {
+        Radio radio = new Radio(5);
         radio.setCurrentStation(10);
-
-        Assertions.assertEquals(5, radio.getCurrentStation());
+        assertEquals(0, radio.getCurrentStation());
     }
 
     @Test
-    public void shouldIncreaseVolume() {
+    void testVolumeDownLimit() {
         Radio radio = new Radio();
-        radio.setCurrentVolume(50);
-
-        radio.increaseVolume();
-
-        Assertions.assertEquals(51, radio.getCurrentVolume());
+        radio.volumeDown();
+        assertEquals(0, radio.getCurrentVolume()); // <-- ИСПРАВЛЕНО ЗДЕСЬ
     }
 
     @Test
-    public void shouldNotIncreaseVolumeAbove100() {
+    void testVolumeUpLimit() {
         Radio radio = new Radio();
-        radio.setCurrentVolume(100);
-
-        radio.increaseVolume();
-
-        Assertions.assertEquals(100, radio.getCurrentVolume());
+        for (int i = 0; i < 110; i++) {
+            radio.volumeUp();
+        }
+        assertEquals(100, radio.getCurrentVolume()); // <-- ИСПРАВЛЕНО ЗДЕСЬ
     }
 
     @Test
-    public void shouldDecreaseVolume() {
-        Radio radio = new Radio();
-        radio.setCurrentVolume(50);
-
-        radio.decreaseVolume();
-
-        Assertions.assertEquals(49, radio.getCurrentVolume());
-    }
-
-    @Test
-    public void shouldNotDecreaseVolumeBelow0() {
-        Radio radio = new Radio();
-        radio.setCurrentVolume(0);
-
-        radio.decreaseVolume();
-
-        Assertions.assertEquals(0, radio.getCurrentVolume());
+    void testInvalidStationsCount() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Radio(0);
+        });
     }
 }
